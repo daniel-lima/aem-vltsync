@@ -58,7 +58,7 @@
                         <embedded>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>vltsync-bundle</artifactId>
-                            <target>/apps/vltsync/install</target>
+                            <target>/apps/techdm-vltsync/install</target>
                         </embedded>
                     </embeddeds>
                     <targetURL>http://${crx.host}:${crx.port}/crx/packmgr/service.jsp</targetURL>
