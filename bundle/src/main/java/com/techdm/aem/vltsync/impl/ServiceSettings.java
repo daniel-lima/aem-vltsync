@@ -22,9 +22,9 @@ import aQute.bnd.annotation.component.Component;
  * @author Daniel Henrique Alves Lima
  *
  */
-@Service(ServiceConfigurationImpl.class)
+@Service(ServiceSettings.class)
 @Component
-public class ServiceConfigurationImpl {
+public class ServiceSettings {
 
 	private static final String SERVICE_PID = "org.apache.jackrabbit.vault.sync.impl.VaultSyncServiceImpl";
 

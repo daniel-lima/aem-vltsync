@@ -41,7 +41,7 @@ public class RegistrationImpl {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Reference
-	private ServiceConfigurationImpl serviceConfiguration;
+	private ServiceSettings serviceSettings;
 
 	private String path = null;
 
@@ -57,13 +57,13 @@ public class RegistrationImpl {
 		this.rootDir = new File(rootDirValue);
 		generateFiles();
 
-		this.serviceConfiguration.addSyncRoot(this.rootDir);
+		this.serviceSettings.addSyncRoot(this.rootDir);
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		if (this.rootDir != null) {
-			this.serviceConfiguration.removeSyncRoot(this.rootDir);
+			this.serviceSettings.removeSyncRoot(this.rootDir);
 		}
 
 		this.path = null;
