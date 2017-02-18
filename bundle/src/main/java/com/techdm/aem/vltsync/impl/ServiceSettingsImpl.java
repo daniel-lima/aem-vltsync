@@ -22,15 +22,16 @@ import aQute.bnd.annotation.component.Component;
  * @author Daniel Henrique Alves Lima
  *
  */
-@Service(ServiceSettings.class)
+@Service(ServiceSettingsImpl.class)
 @Component
-public class ServiceSettings {
+public class ServiceSettingsImpl {
 
 	private static final String SERVICE_PID = "org.apache.jackrabbit.vault.sync.impl.VaultSyncServiceImpl";
 
 	private static final String ENABLED_PROPERTY = "vault.sync.enabled";
 
 	private static final String SYNCROOTS_PROPERTY = "vault.sync.syncroots";
+
 
 	/* The service to get OSGi configs */
 	@Reference
@@ -80,6 +81,7 @@ public class ServiceSettings {
 
 		update(configuration);
 	}
+	
 
 	private void enableSync(final Dictionary<String, Object> properties) {
 		properties.put(ENABLED_PROPERTY, Boolean.TRUE);
