@@ -1,31 +1,29 @@
-package com.techdm.aem.vltsync;
-
-import java.util.Arrays;
-import java.util.Map;
+package com.techdm.aem.vltsync.impl;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
-
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ConfigurationPolicy;
 import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.PropertyUnbounded;
-
 import org.apache.sling.commons.osgi.PropertiesUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Deals with VTL sync integration when necessary.
+ * 
+ * @author Daniel Henrique Alves Lima
+ *
  */
 @Component(policy = ConfigurationPolicy.REQUIRE, configurationFactory = true, metatype = true, immediate = true)
 public class RegisterImpl {
