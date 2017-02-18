@@ -29,7 +29,7 @@ import aQute.bnd.annotation.component.Deactivate;
  *
  */
 @Component(policy = ConfigurationPolicy.REQUIRE, configurationFactory = true, metatype = true, immediate = true)
-public class RegisterImpl {
+public class RegistrationImpl {
 
 	@Property(label = "Path")
 	private static final String PATH_PROPERTY = "path";
