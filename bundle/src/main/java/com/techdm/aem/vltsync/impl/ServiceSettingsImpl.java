@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import aQute.bnd.annotation.component.Component;
 
 /**
- * Service to handle org.apache.jackrabbit.vault.sync.impl.VaultSyncServiceImpl
- * settings.
+ * Handles (reads and writes)
+ * org.apache.jackrabbit.vault.sync.impl.VaultSyncServiceImpl settings.
  * 
  * @author Daniel Henrique Alves Lima
  *
@@ -28,11 +28,11 @@ import aQute.bnd.annotation.component.Component;
 @Component
 public class ServiceSettingsImpl {
 
-	private static final String SERVICE_PID = "org.apache.jackrabbit.vault.sync.impl.VaultSyncServiceImpl";
+	protected static final String SERVICE_PID = "org.apache.jackrabbit.vault.sync.impl.VaultSyncServiceImpl";
 
-	private static final String ENABLED_PROPERTY = "vault.sync.enabled";
+	protected static final String ENABLED_PROPERTY = "vault.sync.enabled";
 
-	private static final String SYNCROOTS_PROPERTY = "vault.sync.syncroots";
+	protected static final String SYNCROOTS_PROPERTY = "vault.sync.syncroots";
 
 	/* Logger instance. */
 	private final Logger logger = LoggerFactory.getLogger(getClass());

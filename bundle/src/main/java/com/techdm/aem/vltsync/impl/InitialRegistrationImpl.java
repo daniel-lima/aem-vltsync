@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 import aQute.bnd.annotation.component.Deactivate;
 
 /**
- * Provides capability similar to 'vlt sync register' command, associating a
- * filesystem path to one or more paths in the JCR.
+ * Creates the necessary vlt sync config files and associates a filesystem path
+ * to one or more paths in the JCR (similar to 'vlt sync register' command).
  * 
  * @author Daniel Henrique Alves Lima
  *
@@ -33,14 +33,18 @@ import aQute.bnd.annotation.component.Deactivate;
 @Component(policy = ConfigurationPolicy.REQUIRE, configurationFactory = true, metatype = true, immediate = true)
 public class InitialRegistrationImpl {
 
-	@Property(label = "Paths")
-	private static final String FILTER_ROOTS_PROPERTY = "filter.roots";
+	@Property(label = "Filter Roots", description = "JCR paths to be added as root in the filter file.[Required]")
+	protected static final String FILTER_ROOTS_PROPERTY = "filter.roots";
 
-	@Property(label = "Root Dir")
-	private static final String LOCAL_PATH_PROPERTY = "local.path";
+	@Property(label = "Local Path", description = "Local path to be added as sync root.[Required]")
+	protected static final String LOCAL_PATH_PROPERTY = "local.path";
 
-	@Property(label = "Overwrite Config Files")
-	private static final String OVERWRITE_CONFIG_FILES_PROPERTY = "overwrite.config.files";
+	@Property(label = "Overwrite Config Files", boolValue = false, description = "Overwrite the vlt sync config files"
+			+ " if they already exist?[Optional] [Default: false]")
+	protected static final String OVERWRITE_CONFIG_FILES_PROPERTY = "overwrite.config.files";
+
+	@Property(value = "Local path: {" + LOCAL_PATH_PROPERTY + "}")
+	private static final String WEBCONSOLE_NAME_HINT_PROPERTY = "webconsole.configurationFactory.nameHint";
 
 	/* Logger instance. */
 	private final Logger logger = LoggerFactory.getLogger(getClass());
