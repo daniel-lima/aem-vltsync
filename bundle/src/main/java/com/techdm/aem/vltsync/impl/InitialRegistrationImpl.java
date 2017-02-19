@@ -33,10 +33,10 @@ import aQute.bnd.annotation.component.Deactivate;
 @Component(policy = ConfigurationPolicy.REQUIRE, configurationFactory = true, metatype = true, immediate = true)
 public class InitialRegistrationImpl {
 
-	@Property(label = "Filter Roots", description = "JCR paths to be added as root in the filter file.[Required]")
+	@Property(label = "Filter Roots", description = "JCR paths to be added as roots in the filter file.[Required]")
 	protected static final String FILTER_ROOTS_PROPERTY = "filter.roots";
 
-	@Property(label = "Local Path", description = "Local path to be added as sync root.[Required]")
+	@Property(label = "Local Path", description = "Filesystem local path to be added as sync root.[Required]")
 	protected static final String LOCAL_PATH_PROPERTY = "local.path";
 
 	@Property(label = "Overwrite Config Files", boolValue = false, description = "Overwrite the vlt sync config files"
