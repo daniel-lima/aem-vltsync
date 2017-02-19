@@ -12,6 +12,8 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import aQute.bnd.annotation.component.Component;
 
@@ -32,6 +34,8 @@ public class ServiceSettingsImpl {
 
 	private static final String SYNCROOTS_PROPERTY = "vault.sync.syncroots";
 
+	/* Logger instance. */
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	/* The service to get OSGi configs */
 	@Reference
@@ -45,6 +49,7 @@ public class ServiceSettingsImpl {
 	 *            directory to add
 	 */
 	public void addSyncRoot(final File syncRoot) throws IllegalStateException {
+		logger.debug("addSyncRoot(): syncRoot = {}", syncRoot);
 		final Configuration configuration = getConfiguration();
 		final Dictionary<String, Object> properties = getProperties(configuration);
 
@@ -67,6 +72,7 @@ public class ServiceSettingsImpl {
 	 *            directory to remove
 	 */
 	public void removeSyncRoot(final File syncRoot) throws IllegalStateException {
+		logger.debug("removeSyncRoot(): syncRoot = {}", syncRoot);
 		final Configuration configuration = getConfiguration();
 		final Dictionary<String, Object> properties = getProperties(configuration);
 
@@ -81,7 +87,6 @@ public class ServiceSettingsImpl {
 
 		update(configuration);
 	}
-	
 
 	private void enableSync(final Dictionary<String, Object> properties) {
 		properties.put(ENABLED_PROPERTY, Boolean.TRUE);
@@ -95,6 +100,7 @@ public class ServiceSettingsImpl {
 		try {
 			return this.configAdmin.getConfiguration(SERVICE_PID);
 		} catch (IOException e) {
+			logger.error("getConfiguration()", e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -118,6 +124,7 @@ public class ServiceSettingsImpl {
 		try {
 			configuration.update();
 		} catch (IOException e) {
+			logger.error("update()", e);
 			throw new IllegalStateException(e);
 		}
 	}
