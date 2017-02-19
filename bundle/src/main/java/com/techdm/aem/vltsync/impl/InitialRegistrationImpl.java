@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 import aQute.bnd.annotation.component.Deactivate;
 
 /**
- * Provides capability similar to 'vlt sync register' command, associating a filesystem path to one or more
- * paths in the JCR.
+ * Provides capability similar to 'vlt sync register' command, associating a
+ * filesystem path to one or more paths in the JCR.
  * 
  * @author Daniel Henrique Alves Lima
  *
@@ -38,7 +38,7 @@ public class InitialRegistrationImpl {
 
 	@Property(label = "Root Dir")
 	private static final String LOCAL_PATH_PROPERTY = "local.path";
-	
+
 	@Property(label = "Overwrite Config Files")
 	private static final String OVERWRITE_CONFIG_FILES_PROPERTY = "overwrite.config.files";
 
@@ -51,7 +51,7 @@ public class InitialRegistrationImpl {
 	private String[] filterRoots = null;
 
 	private File localDir = null;
-	
+
 	private Boolean overwriteConfigFiles = null;
 
 	@Activate
@@ -63,7 +63,7 @@ public class InitialRegistrationImpl {
 
 		this.localDir = new File(localDirValue);
 		this.overwriteConfigFiles = PropertiesUtil.toBoolean(OVERWRITE_CONFIG_FILES_PROPERTY, false);
-		
+
 		generateFiles();
 
 		this.serviceSettings.addSyncRoot(this.localDir);
@@ -86,20 +86,8 @@ public class InitialRegistrationImpl {
 		try {
 			this.localDir.mkdirs();
 
-			/*
-			 * FileFilter fileFilter = new NotFileFilter(new
-			 * RegexFileFilter("^.vlt-sync.+$")); File[] rootDirContents =
-			 * rootDir.listFiles(fileFilter);
-			 * 
-			 * if (rootDirContents == null || rootDirContents.length == 0) {
-			 */
 			logger.debug("generateFiles(): Generating vlt sync config files at {}", this.localDir);
 			generateVltSyncConfigFiles();
-			/*
-			 * } else { if (logger.isDebugEnabled()) {
-			 * logger.debug("run(): {} not empty! It contains {}", rootDir,
-			 * Arrays.asList(rootDirContents)); } }
-			 */
 
 		} catch (IOException e) {
 			logger.error("generateFiles()", e);
@@ -114,46 +102,41 @@ public class InitialRegistrationImpl {
 
 	private void generateConfigPropertyFile() throws IOException {
 		final String configPropertyFilename = ".vlt-sync-config.properties";
-		final List<String> foundPaths = findRelativePaths(configPropertyFilename);
-		final String syncOnce = localDirHasContents()? "FS2JCR" : "JCR2FS";		
-		
+		final List<String> existentConfig = getExistentPaths(configPropertyFilename);
+
 		/*
-		 * Don't overwrite the file if it already exists. Allowing the user
-		 * to create or change .vlt-sync-config.properties guarantees a
-		 * finer control over VTL sync service behavior.
+		 * Don't overwrite the file if it already exists. Allowing the user to
+		 * create or change .vlt-sync-config.properties guarantees a finer
+		 * control over VTL sync service behavior.
 		 */
-		if (foundPaths.isEmpty() || this.overwriteConfigFiles) {
+		if (existentConfig.isEmpty() || this.overwriteConfigFiles) {
+			logger.debug("generateConfigPropertyFile(): writing {} at {}", configPropertyFilename, this.localDir);
+			final File[] localDirContents = getLocalDirContents();
+			final String syncOnce = localDirContents == null || localDirContents.length == 0 ? "JCR2FS" : "FS2JCR";
+
 			PrintWriter writer = null;
 			try {
 				writer = new PrintWriter(new FileWriter(new File(this.localDir, configPropertyFilename)));
-
 				writer.println("disabled=false");
 				writer.println("sync-once=" + syncOnce);
 			} finally {
 				IOUtils.closeQuietly(writer);
 			}
-		} else {			
+		} else {
 			if (logger.isDebugEnabled()) {
-				logger.debug("generateConfigPropertyFile(): {} already contains {}!", this.localDir, foundPaths);
+				logger.debug("generateConfigPropertyFile(): {} already contains {}!", this.localDir, existentConfig);
 			}
 		}
-	}
-
-	private boolean localDirHasContents() {
-		FileFilter fileFilter = new NotFileFilter(new RegexFileFilter("^.vlt-sync.+$"));
-		File[] rootDirContents = this.localDir.listFiles(fileFilter);
-
-		return rootDirContents != null && rootDirContents.length > 0;
 	}
 
 	private void generateWorkspaceFilterFile() throws IOException {
 		final String workspaceFilterFilename = ".vlt-sync-filter.xml";
 		final String defaultWorkspaceFilterFilename = "META-INF/vault/filter.xml";
 
-		final List<String> foundPaths = findRelativePaths(workspaceFilterFilename);
-		final List<String> filterPaths = findRelativePaths(defaultWorkspaceFilterFilename,
+		final List<String> existentFilter = getExistentPaths(workspaceFilterFilename);
+		final List<String> existentDefaultFilter = getExistentPaths(defaultWorkspaceFilterFilename,
 				"../" + defaultWorkspaceFilterFilename);
-		
+
 		/*-
 		 * To make this component compatible with other VLT commands, such
 		 * as checkout and commit, we should not create a sync filter if a
@@ -164,38 +147,49 @@ public class InitialRegistrationImpl {
 		 * already created/configured file!
 		 * 
 		 */
-		if (filterPaths.isEmpty() && (foundPaths.isEmpty() || this.overwriteConfigFiles)) {
+		if (existentDefaultFilter.isEmpty() && (existentFilter.isEmpty() || this.overwriteConfigFiles)) {
+			logger.debug("generateWorkspaceFilterFile(): writing {} at {}", workspaceFilterFilename, this.localDir);
+
 			PrintWriter writer = null;
 			try {
 				writer = new PrintWriter(new FileWriter(new File(localDir, workspaceFilterFilename)));
-
 				writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 				writer.println("<workspaceFilter version=\"1.0\">");
 				for (String path : this.filterRoots) {
-					writer.println("   <filter root=\"" + path + "\"/>");
+					writer.println("\t<filter root=\"" + path + "\"/>");
 				}
 				writer.println("</workspaceFilter>");
 			} finally {
 				IOUtils.closeQuietly(writer);
 			}
-		} else {			
+		} else {
 			if (logger.isDebugEnabled()) {
-				logger.debug("generateWorkspaceFilterFile(): {} already contains {}!", this.localDir, foundPaths);
+				final List<String> filters = new ArrayList<String>(existentFilter);
+				filters.addAll(existentDefaultFilter);
+
+				logger.debug("generateWorkspaceFilterFile(): {} already contains {}!", this.localDir, filters);
 			}
 		}
 	}
 
-	private List<String> findRelativePaths(final String... paths) {
-		List<String> foundPaths = new ArrayList<String>();
+	private File[] getLocalDirContents() {
+		FileFilter fileFilter = new NotFileFilter(new RegexFileFilter("^.vlt-sync.+$"));
+		File[] localDirContents = this.localDir.listFiles(fileFilter);
 
-		for (String path : paths) {
+		return localDirContents;
+	}
+
+	private List<String> getExistentPaths(final String... relativePaths) {
+		List<String> existentPaths = new ArrayList<String>();
+
+		for (String path : relativePaths) {
 			final File file = new File(this.localDir, path);
 			if (file.exists()) {
-				foundPaths.add(path);
+				existentPaths.add(path);
 			}
 		}
 
-		return foundPaths;
+		return existentPaths;
 	}
 
 }
