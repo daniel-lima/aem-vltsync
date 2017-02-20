@@ -2,6 +2,8 @@ package com.techdm.aem.vltsync.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,6 +91,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
 	}
 
 	@Test
@@ -103,6 +106,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data2-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
 	}
 
 	@Test
@@ -117,6 +121,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("empty-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
 	}
 
 	@Test
@@ -132,7 +137,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
 	}
 
 	@Test
@@ -148,6 +153,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data2-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
 	}
 
 	@Test
@@ -162,6 +168,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("empty-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
 	}
 
 	@Test
@@ -177,6 +184,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
 	}
 
 	@Test
@@ -191,6 +199,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		assertEquals(false, this.generatedFilterFile.exists());
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
 	}
 
 	@Test
@@ -206,6 +215,34 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		assertEquals(false, this.generatedFilterFile.exists());
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+	}
+
+	@Test
+	public void testDeactivate() {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+		this.initialRegistration.deactivate();
+
+		/* Check its results. */
+		verify(this.serviceSettings, times(1)).removeSyncRoot(this.baseDir);
+	}
+
+	@Test
+	public void testDeactivateTwice() {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+		this.initialRegistration.deactivate();
+		this.initialRegistration.deactivate();
+
+		/* Check its results. */
+		verify(this.serviceSettings, times(1)).removeSyncRoot(this.baseDir);
 	}
 
 	private void createTempFiles(final String... relativePaths) throws IOException {
