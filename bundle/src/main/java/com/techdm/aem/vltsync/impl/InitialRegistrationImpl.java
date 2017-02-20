@@ -16,6 +16,7 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ConfigurationPolicy;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.slf4j.Logger;
@@ -33,18 +34,20 @@ import aQute.bnd.annotation.component.Deactivate;
 @Component(policy = ConfigurationPolicy.REQUIRE, configurationFactory = true, metatype = true, immediate = true)
 public class InitialRegistrationImpl {
 
-	@Property(label = "Filter Roots", description = "JCR paths to be added as roots in the filter file.[Required]")
-	protected static final String FILTER_ROOTS_PROPERTY = "filter.roots";
+	private static final boolean DEFAULT_OVERWRITE_CONFIG_FILES = false;
+
+	@Property(label = "Filter Roots", description = "JCR paths to be added as roots in the filter file.[Required]", unbounded = PropertyUnbounded.ARRAY)
+	protected static final String PROP_FILTER_ROOTS = "filter.roots";
 
 	@Property(label = "Local Path", description = "Filesystem local path to be added as sync root.[Required]")
-	protected static final String LOCAL_PATH_PROPERTY = "local.path";
+	protected static final String PROP_LOCAL_PATH = "local.path";
 
 	@Property(label = "Overwrite Config Files", boolValue = false, description = "Overwrite the vlt sync config files"
-			+ " if they already exist?[Optional] [Default: false]")
-	protected static final String OVERWRITE_CONFIG_FILES_PROPERTY = "overwrite.config.files";
+			+ " if they already exist?[Optional] [Default: " + DEFAULT_OVERWRITE_CONFIG_FILES + "]")
+	protected static final String PROP_OVERWRITE_CONFIG_FILES = "overwrite.config.files";
 
-	@Property(value = "Local path: {" + LOCAL_PATH_PROPERTY + "}")
-	private static final String WEBCONSOLE_NAME_HINT_PROPERTY = "webconsole.configurationFactory.nameHint";
+	@Property(value = "Local path: {" + PROP_LOCAL_PATH + "}")
+	private static final String PROP_WEBCONSOLE_NAME_HINT = "webconsole.configurationFactory.nameHint";
 
 	/* Logger instance. */
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -62,11 +65,12 @@ public class InitialRegistrationImpl {
 	protected void activate(final Map<String, Object> props) {
 		logger.debug("activate(): props = {}", props);
 
-		this.filterRoots = PropertiesUtil.toStringArray(props.get(FILTER_ROOTS_PROPERTY), new String[0]);
-		final String localDirValue = PropertiesUtil.toString(props.get(LOCAL_PATH_PROPERTY), null);
+		this.filterRoots = PropertiesUtil.toStringArray(props.get(PROP_FILTER_ROOTS), new String[0]);
+		final String localDirValue = PropertiesUtil.toString(props.get(PROP_LOCAL_PATH), null);
 
 		this.localDir = new File(localDirValue);
-		this.overwriteConfigFiles = PropertiesUtil.toBoolean(OVERWRITE_CONFIG_FILES_PROPERTY, false);
+		this.overwriteConfigFiles = PropertiesUtil.toBoolean(PROP_OVERWRITE_CONFIG_FILES,
+				DEFAULT_OVERWRITE_CONFIG_FILES);
 
 		generateFiles();
 

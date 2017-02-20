@@ -30,9 +30,9 @@ public class ServiceSettingsImpl {
 
 	protected static final String SERVICE_PID = "org.apache.jackrabbit.vault.sync.impl.VaultSyncServiceImpl";
 
-	protected static final String ENABLED_PROPERTY = "vault.sync.enabled";
+	protected static final String PROP_ENABLED = "vault.sync.enabled";
 
-	protected static final String SYNCROOTS_PROPERTY = "vault.sync.syncroots";
+	protected static final String PROP_SYNCROOTS = "vault.sync.syncroots";
 
 	/* Logger instance. */
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -60,7 +60,7 @@ public class ServiceSettingsImpl {
 			enableSync(properties);
 		}
 
-		properties.put(SYNCROOTS_PROPERTY, syncRoots.toArray(new String[syncRoots.size()]));
+		properties.put(PROP_SYNCROOTS, syncRoots.toArray(new String[syncRoots.size()]));
 		update(configuration);
 	}
 
@@ -79,7 +79,7 @@ public class ServiceSettingsImpl {
 		final Set<String> syncRoots = getSyncRoots(properties);
 
 		syncRoots.remove(syncRoot.getAbsolutePath());
-		properties.put(SYNCROOTS_PROPERTY, syncRoots.toArray(new String[syncRoots.size()]));
+		properties.put(PROP_SYNCROOTS, syncRoots.toArray(new String[syncRoots.size()]));
 
 		if (syncRoots.size() == 0) {
 			disableSync(properties);
@@ -89,11 +89,11 @@ public class ServiceSettingsImpl {
 	}
 
 	private void enableSync(final Dictionary<String, Object> properties) {
-		properties.put(ENABLED_PROPERTY, Boolean.TRUE);
+		properties.put(PROP_ENABLED, Boolean.TRUE);
 	}
 
 	private void disableSync(final Dictionary<String, Object> properties) {
-		properties.put(ENABLED_PROPERTY, Boolean.FALSE);
+		properties.put(PROP_ENABLED, Boolean.FALSE);
 	}
 
 	private Configuration getConfiguration() throws IllegalStateException {
@@ -112,7 +112,7 @@ public class ServiceSettingsImpl {
 
 	private Set<String> getSyncRoots(final Dictionary<String, Object> properties) {
 		final Set<String> syncRoots = new LinkedHashSet<String>();
-		String[] syncRootArray = PropertiesUtil.toStringArray(properties.get(SYNCROOTS_PROPERTY));
+		String[] syncRootArray = PropertiesUtil.toStringArray(properties.get(PROP_SYNCROOTS));
 		if (syncRootArray != null) {
 			syncRoots.addAll(Arrays.asList(syncRootArray));
 			syncRootArray = null;
