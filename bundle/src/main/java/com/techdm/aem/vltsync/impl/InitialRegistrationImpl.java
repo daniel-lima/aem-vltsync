@@ -19,6 +19,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,14 +63,21 @@ public class InitialRegistrationImpl {
 	private Boolean overwriteConfigFiles = null;
 
 	@Activate
-	protected void activate(final Map<String, Object> props) {
+	protected void activate(final Map<String, Object> props) throws ServiceException {
 		logger.debug("activate(): props = {}", props);
 
-		this.filterRoots = PropertiesUtil.toStringArray(props.get(PROP_FILTER_ROOTS), new String[0]);
+		this.filterRoots = PropertiesUtil.toStringArray(props.get(PROP_FILTER_ROOTS), null);
+		if (this.filterRoots == null) {
+			throw new ServiceException(PROP_FILTER_ROOTS + " is mandatory!");
+		}
+		
 		final String localDirValue = PropertiesUtil.toString(props.get(PROP_LOCAL_PATH), null);
+		if (localDirValue == null) {
+			throw new ServiceException(PROP_LOCAL_PATH + " is mandatory!");
+		}
 
 		this.localDir = new File(localDirValue);
-		this.overwriteConfigFiles = PropertiesUtil.toBoolean(PROP_OVERWRITE_CONFIG_FILES,
+		this.overwriteConfigFiles = PropertiesUtil.toBoolean(props.get(PROP_OVERWRITE_CONFIG_FILES),
 				DEFAULT_OVERWRITE_CONFIG_FILES);
 
 		generateFiles();
