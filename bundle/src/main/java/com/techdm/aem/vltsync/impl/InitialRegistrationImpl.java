@@ -32,7 +32,8 @@ import aQute.bnd.annotation.component.Deactivate;
  * @author Daniel Henrique Alves Lima
  *
  */
-@Component(policy = ConfigurationPolicy.REQUIRE, configurationFactory = true, metatype = true, immediate = true)
+@Component(policy = ConfigurationPolicy.REQUIRE, configurationFactory = true, metatype = true, immediate = true, label = "TechDM - "
+		+ "VLT Sync Initial Registration", description = "Component for initial registration of sync folders")
 public class InitialRegistrationImpl {
 
 	private static final boolean DEFAULT_OVERWRITE_CONFIG_FILES = false;
@@ -70,7 +71,7 @@ public class InitialRegistrationImpl {
 		if (this.filterRoots == null) {
 			throw new ServiceException(PROP_FILTER_ROOTS + " is mandatory!");
 		}
-		
+
 		final String localDirValue = PropertiesUtil.toString(props.get(PROP_LOCAL_PATH), null);
 		if (localDirValue == null) {
 			throw new ServiceException(PROP_LOCAL_PATH + " is mandatory!");
