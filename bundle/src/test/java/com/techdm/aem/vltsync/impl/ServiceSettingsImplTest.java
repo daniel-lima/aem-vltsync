@@ -55,7 +55,7 @@ public class ServiceSettingsImplTest {
 		assertArrayEquals(new String[] { "/virtual/root" },
 				(String[]) this.dictionary.get(ServiceSettingsImpl.PROP_SYNCROOTS));
 
-		verify(this.configuration, times(1)).update();
+		verify(this.configuration, times(1)).update(this.dictionary);
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class ServiceSettingsImplTest {
 		assertArrayEquals(new String[] { "/virtual/old", "/virtual/new" },
 				(String[]) this.dictionary.get(ServiceSettingsImpl.PROP_SYNCROOTS));
 
-		verify(this.configuration, times(1)).update();
+		verify(this.configuration, times(1)).update(this.dictionary);
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class ServiceSettingsImplTest {
 		assertEquals(false, this.dictionary.get(ServiceSettingsImpl.PROP_ENABLED));
 		assertArrayEquals(new String[] {}, (String[]) this.dictionary.get(ServiceSettingsImpl.PROP_SYNCROOTS));
 
-		verify(this.configuration, times(1)).update();
+		verify(this.configuration, times(1)).update(this.dictionary);
 	}
 
 	@Test
@@ -105,7 +105,7 @@ public class ServiceSettingsImplTest {
 		assertArrayEquals(new String[] { "/virtual/old2" },
 				(String[]) this.dictionary.get(ServiceSettingsImpl.PROP_SYNCROOTS));
 
-		verify(this.configuration, times(1)).update();
+		verify(this.configuration, times(1)).update(this.dictionary);
 	}
 
 	@Test
@@ -122,7 +122,7 @@ public class ServiceSettingsImplTest {
 		assertArrayEquals(new String[] { "/virtual/root" },
 				(String[]) this.dictionary.get(ServiceSettingsImpl.PROP_SYNCROOTS));
 
-		verify(this.configuration, times(1)).update();
+		verify(this.configuration, times(1)).update(this.dictionary);
 	}
 	
 	@Test
@@ -139,7 +139,7 @@ public class ServiceSettingsImplTest {
 		assertArrayEquals(new String[] {},
 				(String[]) this.dictionary.get(ServiceSettingsImpl.PROP_SYNCROOTS));
 
-		verify(this.configuration, times(1)).update();
+		verify(this.configuration, times(1)).update(this.dictionary);
 	}
 
 }

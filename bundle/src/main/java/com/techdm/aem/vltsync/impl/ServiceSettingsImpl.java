@@ -60,7 +60,7 @@ public class ServiceSettingsImpl {
 		}
 
 		properties.put(PROP_SYNCROOTS, syncRoots.toArray(new String[syncRoots.size()]));
-		update(configuration);
+		update(configuration, properties);
 	}
 
 	/**
@@ -84,14 +84,16 @@ public class ServiceSettingsImpl {
 			disableSync(properties);
 		}
 
-		update(configuration);
+		update(configuration, properties);
 	}
-	
+
 	private void enableSync(final Dictionary<String, Object> properties) {
+		logger.debug("enableSync(): properties = {}", properties);
 		properties.put(PROP_ENABLED, Boolean.TRUE);
 	}
 
 	private void disableSync(final Dictionary<String, Object> properties) {
+		logger.debug("disableSync(): properties = {}", properties);
 		properties.put(PROP_ENABLED, Boolean.FALSE);
 	}
 
@@ -106,7 +108,8 @@ public class ServiceSettingsImpl {
 
 	@SuppressWarnings("unchecked")
 	private Dictionary<String, Object> getProperties(final Configuration configuration) {
-		return configuration.getProperties();
+		Dictionary<String, Object> properties = configuration.getProperties();
+		return properties;
 	}
 
 	private Set<String> getSyncRoots(final Dictionary<String, Object> properties) {
@@ -116,12 +119,15 @@ public class ServiceSettingsImpl {
 			syncRoots.addAll(Arrays.asList(syncRootArray));
 			syncRootArray = null;
 		}
+
 		return syncRoots;
 	}
 
-	private void update(final Configuration configuration) throws IllegalStateException {
+	private void update(final Configuration configuration, final Dictionary<String, Object> properties)
+			throws IllegalStateException {
+		logger.debug("update(): configuration = {}, properties = {}", configuration, properties);
 		try {
-			configuration.update();
+			configuration.update(properties);
 		} catch (IOException e) {
 			logger.error("update()", e);
 			throw new IllegalStateException(e);
