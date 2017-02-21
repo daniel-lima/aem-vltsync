@@ -7,6 +7,7 @@ import java.util.Dictionary;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.osgi.PropertiesUtil;
@@ -14,8 +15,6 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import aQute.bnd.annotation.component.Component;
 
 /**
  * Handles (reads and writes)
@@ -87,7 +86,7 @@ public class ServiceSettingsImpl {
 
 		update(configuration);
 	}
-
+	
 	private void enableSync(final Dictionary<String, Object> properties) {
 		properties.put(PROP_ENABLED, Boolean.TRUE);
 	}

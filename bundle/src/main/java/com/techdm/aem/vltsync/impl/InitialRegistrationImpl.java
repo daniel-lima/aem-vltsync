@@ -88,6 +88,7 @@ public class InitialRegistrationImpl {
 
 	@Deactivate
 	protected void deactivate() {
+		logger.debug("deactivate()");
 		if (this.localDir != null) {
 			this.serviceSettings.removeSyncRoot(this.localDir);
 		}
