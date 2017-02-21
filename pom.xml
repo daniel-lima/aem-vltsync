@@ -12,7 +12,7 @@
 	<packaging>pom</packaging>
 
 	<name>[AEM] VLT Sync - Reactor Project</name>
-	<description>VLT Sync installation and support</description>
+	<description>[AEM] VLT Sync installation and support</description>
 
 	<prerequisites>
 		<maven>3.0.2</maven>
