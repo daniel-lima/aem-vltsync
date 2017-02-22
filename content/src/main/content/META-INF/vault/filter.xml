@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
   <filter root="/apps/techdm-vltsync"/>
-  <filter root="/libs/crx/vault/config"/>
-  <filter root="/libs/crx/vault/install"/>
+  <filter root="/libs/crx/vault/config" mode="merge"/>
+  <filter root="/libs/crx/vault/install" mode="update"/>
 </workspaceFilter>
