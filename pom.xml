@@ -289,5 +289,6 @@
 	<modules>
 		<module>bundle</module>
 		<module>content</module>
+		<module>sample-content</module>		
 	</modules>
 </project>

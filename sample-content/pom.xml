@@ -70,7 +70,7 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>autoInstallPackage</id>
+			<id>autoInstallSamplePackage</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -90,7 +90,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>autoInstallPackagePublish</id>
+			<id>autoInstallSamplePackagePublish</id>
 			<build>
 				<plugins>
 					<plugin>
