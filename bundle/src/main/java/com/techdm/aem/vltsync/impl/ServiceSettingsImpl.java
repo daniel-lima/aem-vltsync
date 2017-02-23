@@ -61,6 +61,12 @@ public class ServiceSettingsImpl {
 
 		properties.put(PROP_SYNCROOTS, syncRoots.toArray(new String[syncRoots.size()]));
 		update(configuration, properties);
+		
+		Thread.yield();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+		}
 	}
 
 	/**
@@ -85,6 +91,11 @@ public class ServiceSettingsImpl {
 		}
 
 		update(configuration, properties);
+		Thread.yield();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+		}
 	}
 
 	private void enableSync(final Dictionary<String, Object> properties) {
