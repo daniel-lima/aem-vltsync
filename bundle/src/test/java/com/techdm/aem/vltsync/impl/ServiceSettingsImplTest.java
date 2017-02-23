@@ -39,6 +39,7 @@ public class ServiceSettingsImplTest {
 		when(this.configuration.getProperties()).thenReturn(this.dictionary);
 
 		PrivateAccessor.setField(this.serviceSettings, "configAdmin", this.configurationAdmin);
+		PrivateAccessor.setField(this.serviceSettings, "lastCallTime", -1);
 	}
 
 	@Test

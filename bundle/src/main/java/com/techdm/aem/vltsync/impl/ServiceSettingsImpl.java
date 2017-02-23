@@ -40,6 +40,10 @@ public class ServiceSettingsImpl {
 	@Reference
 	private ConfigurationAdmin configAdmin;
 
+	private final long defaultSleepTimeBetweenCalls = 60000;
+
+	private long lastCallTime = System.currentTimeMillis() - defaultSleepTimeBetweenCalls;
+
 	/**
 	 * Add the specified directory to the sync roots, enabling the service when
 	 * necessary.
@@ -47,7 +51,7 @@ public class ServiceSettingsImpl {
 	 * @param syncRoot
 	 *            directory to add
 	 */
-	public void addSyncRoot(final File syncRoot) throws IllegalStateException {
+	public synchronized void addSyncRoot(final File syncRoot) throws IllegalStateException {
 		logger.debug("addSyncRoot(): syncRoot = {}", syncRoot);
 		final Configuration configuration = getConfiguration();
 		final Dictionary<String, Object> properties = getProperties(configuration);
@@ -60,13 +64,46 @@ public class ServiceSettingsImpl {
 		}
 
 		properties.put(PROP_SYNCROOTS, syncRoots.toArray(new String[syncRoots.size()]));
-		update(configuration, properties);
-		
-		Thread.yield();
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
+
+		/*
+		 * Vault Sync Service doesn't behave very well if it is restarted during
+		 * the first sync (sync once):
+		 * 
+		 * "Error during sync javax.jcr.RepositoryException: This session has
+		 * been closed. at
+		 * org.apache.jackrabbit.oak.jcr.delegate.SessionDelegate.checkAlive(
+		 * SessionDelegate.java:290)"
+		 * 
+		 * Which results in an incomplete synchronization. That's why we try to
+		 * sleep a few moments, before changing its configuration and restarting
+		 * it indirectly.
+		 * 
+		 */
+
+		final long timeBetweenCalls = System.currentTimeMillis() - this.lastCallTime;
+		final long remainingSleepTime = this.defaultSleepTimeBetweenCalls - timeBetweenCalls;
+
+		logger.debug("update(): lastCallTime = {}, now = {}", this.lastCallTime, System.currentTimeMillis());
+		logger.debug("update(): defaultSleepTimeBetweenCalls = {}, remainingSleepTime = {}",
+				this.defaultSleepTimeBetweenCalls, remainingSleepTime);
+
+		if (remainingSleepTime > 0) {
+			logger.debug("update(): sleeping for {} (ms)", remainingSleepTime);
+			Thread.yield();
+			try {
+				Thread.sleep(remainingSleepTime);
+			} catch (InterruptedException e) {
+			} finally {				
+				logger.debug("update(): waking up!", remainingSleepTime);
+			}
 		}
+		this.lastCallTime = System.currentTimeMillis();		
+		
+		
+		
+		
+		
+		update(configuration, properties);
 	}
 
 	/**
@@ -76,7 +113,7 @@ public class ServiceSettingsImpl {
 	 * @param syncRoot
 	 *            directory to remove
 	 */
-	public void removeSyncRoot(final File syncRoot) throws IllegalStateException {
+	public synchronized void removeSyncRoot(final File syncRoot) throws IllegalStateException {
 		logger.debug("removeSyncRoot(): syncRoot = {}", syncRoot);
 		final Configuration configuration = getConfiguration();
 		final Dictionary<String, Object> properties = getProperties(configuration);
@@ -91,11 +128,6 @@ public class ServiceSettingsImpl {
 		}
 
 		update(configuration, properties);
-		Thread.yield();
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-		}
 	}
 
 	private void enableSync(final Dictionary<String, Object> properties) {
@@ -137,6 +169,13 @@ public class ServiceSettingsImpl {
 	private void update(final Configuration configuration, final Dictionary<String, Object> properties)
 			throws IllegalStateException {
 		logger.debug("update(): configuration = {}, properties = {}", configuration, properties);
+
+
+
+		/*
+		 * Now, change its configuration!
+		 */
+
 		try {
 			configuration.update(properties);
 		} catch (IOException e) {
