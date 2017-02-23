@@ -1,0 +1,10 @@
+<html>
+<head>
+<title>${properties['jcr:title']}</title>
+</head>
+<body>
+<sly data-sly-list.entry="${properties.entrySet.iterator}">
+   <p>${entry.key} = ${entry.value}</p>
+</sly>
+</body>
+</html>

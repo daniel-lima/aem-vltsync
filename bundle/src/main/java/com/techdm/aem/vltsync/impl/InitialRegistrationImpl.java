@@ -130,7 +130,7 @@ public class InitialRegistrationImpl {
 		if (existentConfig.isEmpty() || this.overwriteConfigFiles) {
 			logger.debug("generateConfigPropertyFile(): writing {} at {}", configPropertyFilename, this.localDir);
 			final File[] localDirContents = getLocalDirContents();
-			final String syncOnce = localDirContents == null || localDirContents.length == 0 ? "JCR2FS" : "FS2JCR";
+			final String syncOnce = (localDirContents == null || localDirContents.length == 0) ? "JCR2FS" : "FS2JCR";
 
 			PrintWriter writer = null;
 			try {

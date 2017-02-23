@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     xmlns:jcr="http://www.jcp.org/jcr/1.0" jcr:primaryType="sling:OsgiConfig"
-    local.path="/tmp/vltsync-test/content2"
-    filter.roots="[/apps/techdm-vltsync-sample/install]"
+    local.path="/tmp/vltsync-test/data"
+    filter.roots="[/content/techdm-vltsync-sample]"
     overwrite.config.files="true"
      />

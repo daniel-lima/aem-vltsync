@@ -95,6 +95,37 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
+	public void testActivateDirWithIgnorableContentSuccess() throws URISyntaxException, IOException {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+		createTempFiles(".vlt-sync.log");
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+	}
+
+	@Test
+	public void testActivateDirWithIgnorableContentOverwriteSuccess() throws URISyntaxException, IOException {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+		createTempFiles(".vlt-sync.log");
+		this.props.put(InitialRegistrationImpl.PROP_OVERWRITE_CONFIG_FILES, true);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+	}
+
+	@Test
 	public void testActivateDirWithContentsSuccess() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
