@@ -19,20 +19,21 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
+/*-
  * Vault Sync Service doesn't behave very well if it is restarted during
  * the first sync (sync once):
  * 
- * "Error during sync javax.jcr.RepositoryException: This session has
- * been closed. at
- * org.apache.jackrabbit.oak.jcr.delegate.SessionDelegate.checkAlive(
- * SessionDelegate.java:290)"
+ * "Error during sync javax.jcr.RepositoryException: This session has been closed.
+ * at
+ * org.apache.jackrabbit.oak.jcr.delegate.SessionDelegate.checkAlive(SessionDelegate.java:290)"
  * 
  * Which results in an incomplete synchronization. That's why we try to
  * sleep a few moments, before changing its configuration and restarting
  * it indirectly.
  * 
- * However, this won't cover all the situations!!!
+ * However, this won't cover all the possibilities. The service can be in the middle of a
+ * regular sync (which is undetectable) when we change its configuration.
+ * Or .vlt-sync.properties can be manually changed (another uncovered situation).
  * 
  */
 
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public class ServiceSettingsConsumerImpl implements JobConsumer {
 
 	/** The Queue being observed by this consumer. */
-	protected static final String TOPIC_NAME = "my/sling/job";
+	protected static final String TOPIC_NAME = "com/techdm/aem/vltsync/impl/ServiceSettingsQueue";
 
 	@Property(value = TOPIC_NAME)
 	private static final String PROP_TOPICS = JobConsumer.PROPERTY_TOPICS;
@@ -133,6 +134,8 @@ public class ServiceSettingsConsumerImpl implements JobConsumer {
 	 * 
 	 * @param syncRoot
 	 *            directory to add
+	 * @param expectedSyncTime
+	 *            the expected sync time as result of adding this directory
 	 */
 	protected void addSyncRoot(final File syncRoot, final Long expectedSyncTime) throws IllegalStateException {
 		logger.debug("addSyncRoot(): syncRoot = {}, expectedSyncTime = {}", syncRoot, expectedSyncTime);

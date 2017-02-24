@@ -42,10 +42,12 @@ public class InitialRegistrationImplTest {
 
 	private File generatedFilterFile;
 
-	private InitialRegistrationImpl initialRegistration = new InitialRegistrationImpl();
+	private InitialRegistrationImpl initialRegistration = null;
 
 	@Before
 	public void setUp() throws NoSuchFieldException, IOException {
+		this.initialRegistration = new InitialRegistrationImpl();
+		
 		this.baseDir = File.createTempFile(getClass().getName(), "_tmp");
 		this.baseDir.delete();
 		this.baseDir.mkdir();
