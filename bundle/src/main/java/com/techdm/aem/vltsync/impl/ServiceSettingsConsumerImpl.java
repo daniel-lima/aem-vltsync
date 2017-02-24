@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 
 /**
- * Responsible for processing (asynchronously) the requests for change on VTL
+ * Responsible for processing (asynchronously) the requests of changes of VTL
  * Sync Service settings.
  * 
  * @author Daniel Henrique Alves Lima
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public class ServiceSettingsConsumerImpl implements JobConsumer {
 
 	/** The Queue being observed by this consumer. */
-	protected static final String TOPIC_NAME = "com/techdm/aem/vltsync/impl/ServiceSettingsQueue";
+	protected static final String TOPIC_NAME = "com/techdm/aem/vltsync/impl/ServiceSettings";
 
 	@Property(value = TOPIC_NAME)
 	private static final String PROP_TOPICS = JobConsumer.PROPERTY_TOPICS;
@@ -105,6 +105,7 @@ public class ServiceSettingsConsumerImpl implements JobConsumer {
 	 * 
 	 */
 	public JobResult process(Job job) {
+		logger.debug("process(): job = {}", job);
 		try {
 			final String action = job.getProperty(KEY_ACTION, String.class);
 			final File syncRoot = job.getProperty(KEY_SYNC_ROOT, File.class);
