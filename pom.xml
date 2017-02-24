@@ -110,6 +110,13 @@
 				<version>2.4</version>
 				<scope>provided</scope>
 			</dependency>
+			
+			<dependency>
+	<groupId>org.apache.sling</groupId>
+	<artifactId>org.apache.sling.event</artifactId>
+	<version>3.5.4</version>
+	<scope>provided</scope>
+</dependency>
 
 			<!-- Testing -->
 			<dependency>

@@ -91,7 +91,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test
@@ -122,7 +122,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data2-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test
@@ -152,9 +152,24 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("empty-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, null);
 	}
 
+	@Test
+	public void testActivatePropertyFileExistsNoSyncOnceSuccess() throws IOException, URISyntaxException {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+		FileUtils.copyFile(getResource("data3-config.properties"), this.generatedConfigFile);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data3-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, null);
+	}
+	
 	@Test
 	public void testActivatePropertyFileExistsOverwriteSuccess() throws IOException, URISyntaxException {
 		/* Prepare data. */
@@ -168,7 +183,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test
@@ -177,6 +192,7 @@ public class InitialRegistrationImplTest {
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles("README.md", SYNC_CONFIG_FN);
 		this.props.put(InitialRegistrationImpl.PROP_OVERWRITE_CONFIG_FILES, true);
+		this.props.put(InitialRegistrationImpl.PROP_EXPECTED_SYNC_ONCE_TIME, 3001l);
 
 		/* Invoke method. */
 		this.initialRegistration.activate(this.props);
@@ -184,7 +200,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data2-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3001l);
 	}
 
 	@Test
@@ -199,7 +215,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("empty-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test
@@ -215,7 +231,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test
@@ -230,7 +246,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		assertEquals(false, this.generatedFilterFile.exists());
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test
@@ -246,7 +262,7 @@ public class InitialRegistrationImplTest {
 		/* Check its results. */
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		assertEquals(false, this.generatedFilterFile.exists());
-		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 
 	@Test

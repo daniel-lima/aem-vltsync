@@ -2,16 +2,19 @@ package com.techdm.aem.vltsync.impl;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ConfigurationPolicy;
@@ -38,6 +41,8 @@ public class InitialRegistrationImpl {
 
 	private static final boolean DEFAULT_OVERWRITE_CONFIG_FILES = false;
 
+	private static final long DEFAULT_EXPECTED_SYNC_ONCE_TIME = 3000;
+
 	@Property(label = "Filter Roots", description = "JCR paths to be added as roots in the filter file.[Required]", unbounded = PropertyUnbounded.ARRAY)
 	protected static final String PROP_FILTER_ROOTS = "filter.roots";
 
@@ -47,6 +52,10 @@ public class InitialRegistrationImpl {
 	@Property(label = "Overwrite Config Files", boolValue = false, description = "Overwrite the vlt sync config files"
 			+ " if they already exist?[Optional] [Default: " + DEFAULT_OVERWRITE_CONFIG_FILES + "]")
 	protected static final String PROP_OVERWRITE_CONFIG_FILES = "overwrite.config.files";
+
+	@Property(label = "Expected Sync Once Time", boolValue = false, description = "How many milliseconds"
+			+ " a sync once operation would take?[Optional] [Default: " + DEFAULT_EXPECTED_SYNC_ONCE_TIME + "]")
+	protected static final String PROP_EXPECTED_SYNC_ONCE_TIME = "expected.sync.once.time";
 
 	@Property(value = "Local path: {" + PROP_LOCAL_PATH + "}")
 	private static final String PROP_WEBCONSOLE_NAME_HINT = "webconsole.configurationFactory.nameHint";
@@ -62,6 +71,8 @@ public class InitialRegistrationImpl {
 	private File localDir = null;
 
 	private Boolean overwriteConfigFiles = null;
+
+	private Boolean willSyncOnce = null;
 
 	@Activate
 	protected void activate(final Map<String, Object> props) throws ServiceException {
@@ -83,7 +94,13 @@ public class InitialRegistrationImpl {
 
 		generateFiles();
 
-		this.serviceSettings.addSyncRoot(this.localDir);
+		Long expectedSyncOnceTime = null;
+		if (this.willSyncOnce) {
+			expectedSyncOnceTime = PropertiesUtil.toLong(props.get(PROP_EXPECTED_SYNC_ONCE_TIME),
+					DEFAULT_EXPECTED_SYNC_ONCE_TIME);
+		}
+
+		this.serviceSettings.addSyncRoot(this.localDir, expectedSyncOnceTime);
 	}
 
 	@Deactivate
@@ -96,6 +113,7 @@ public class InitialRegistrationImpl {
 		this.filterRoots = null;
 		this.localDir = null;
 		this.overwriteConfigFiles = null;
+		this.willSyncOnce = null;
 	}
 
 	private void generateFiles() throws IllegalStateException {
@@ -129,6 +147,8 @@ public class InitialRegistrationImpl {
 		 */
 		if (existentConfig.isEmpty() || this.overwriteConfigFiles) {
 			logger.debug("generateConfigPropertyFile(): writing {} at {}", configPropertyFilename, this.localDir);
+
+			this.willSyncOnce = Boolean.TRUE;
 			final File[] localDirContents = getLocalDirContents();
 			final String syncOnce = (localDirContents == null || localDirContents.length == 0) ? "JCR2FS" : "FS2JCR";
 
@@ -144,6 +164,14 @@ public class InitialRegistrationImpl {
 			if (logger.isDebugEnabled()) {
 				logger.debug("generateConfigPropertyFile(): {} already contains {}!", this.localDir, existentConfig);
 			}
+		}
+
+		if (this.willSyncOnce == null) {
+			/* Check if the existent file has a sync-once instruction. */
+			Properties props = new Properties();
+			props.load(new FileReader(new File(this.localDir, configPropertyFilename)));
+			String syncOnceValue = props.getProperty("sync-once");
+			this.willSyncOnce = StringUtils.isNotEmpty(syncOnceValue);
 		}
 	}
 
