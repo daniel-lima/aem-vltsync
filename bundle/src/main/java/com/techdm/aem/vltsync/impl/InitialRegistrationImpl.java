@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 Daniel Henrique Alves Lima
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.techdm.aem.vltsync.impl;
 
 import java.io.File;
@@ -85,7 +100,7 @@ public class InitialRegistrationImpl {
 	@Property(label = "Overwrite Config Files", boolValue = DEFAULT_OVERWRITE_CONFIG_FILES, description = "Overwrite the vlt sync config files"
 			+ " if they already exist?[Optional] [Default: " + DEFAULT_OVERWRITE_CONFIG_FILES + "]")
 	protected static final String PROP_OVERWRITE_CONFIG_FILES = "overwrite.config.files";
-	
+
 	@Property(value = "Local path: {" + PROP_LOCAL_PATH + "}")
 	private static final String PROP_WEBCONSOLE_NAME_HINT = "webconsole.configurationFactory.nameHint";
 
@@ -124,7 +139,7 @@ public class InitialRegistrationImpl {
 				DEFAULT_OVERWRITE_CONFIG_FILES);
 
 		this.syncOnceType = PropertiesUtil.toString(props.get(PROP_SYNC_ONCE_TYPE), SYNC_ONCE_AUTO);
-		
+
 		generateFiles();
 
 		Long expectedSyncOnceTime = null;
