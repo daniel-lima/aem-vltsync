@@ -72,14 +72,14 @@ public class InitialRegistrationImpl {
 	protected static final String PROP_LOCAL_PATH = "local.path";
 
 	@Property(label = "Sync Once Type", value = SYNC_ONCE_AUTO, description = "Type of sync-once"
-			+ " to perform.[Optional] [Default: " + SYNC_ONCE_AUTO + "]", options = {
+			+ " to perform.[Optional] [Default: Auto detect]", options = {
 					@PropertyOption(name = SYNC_ONCE_AUTO, value = "Auto detect"),
 					@PropertyOption(name = SYNC_ONCE_FS2JCR, value = "Filesystem to JCR"),
 					@PropertyOption(name = SYNC_ONCE_JCR2FS, value = "JCR to Filesystem") })
 	protected static final String PROP_SYNC_ONCE_TYPE = "sync.once.type";
 
 	@Property(label = "Sync Once Expected Time", longValue = DEFAULT_SYNC_ONCE_EXPECTED_TIME, description = "How many milliseconds"
-			+ " a sync-once operation would take?[Optional] [Default: Auto detect]")
+			+ " a sync-once operation would take?[Optional] [Default: " + DEFAULT_SYNC_ONCE_EXPECTED_TIME + "]")
 	protected static final String PROP_SYNC_ONCE_EXPECTED_TIME = "sync.once.expected.time";
 
 	@Property(label = "Overwrite Config Files", boolValue = DEFAULT_OVERWRITE_CONFIG_FILES, description = "Overwrite the vlt sync config files"
