@@ -27,6 +27,9 @@
 		</dependency>
 
 		<!-- VLT sync service bundle -->
+		<!-- AEM 6.0: VLT sync 3.1.6 -->
+		<!-- AEM 6.1: VLT sync 3.1.16 -->
+		<!-- AEM 6.2: VLT sync 3.1.16 -->		
 		<dependency>
 			<groupId>org.apache.jackrabbit.vault</groupId>
 			<artifactId>vault-sync</artifactId>

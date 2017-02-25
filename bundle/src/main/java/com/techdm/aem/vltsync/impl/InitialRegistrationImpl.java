@@ -49,12 +49,12 @@ public class InitialRegistrationImpl {
 	@Property(label = "Local Path", description = "Filesystem local path to be added as sync root.[Required]")
 	protected static final String PROP_LOCAL_PATH = "local.path";
 
-	@Property(label = "Overwrite Config Files", boolValue = false, description = "Overwrite the vlt sync config files"
+	@Property(label = "Overwrite Config Files", boolValue = DEFAULT_OVERWRITE_CONFIG_FILES, description = "Overwrite the vlt sync config files"
 			+ " if they already exist?[Optional] [Default: " + DEFAULT_OVERWRITE_CONFIG_FILES + "]")
 	protected static final String PROP_OVERWRITE_CONFIG_FILES = "overwrite.config.files";
 
-	@Property(label = "Expected Sync Once Time", boolValue = false, description = "How many milliseconds"
-			+ " a sync once operation would take?[Optional] [Default: " + DEFAULT_EXPECTED_SYNC_ONCE_TIME + "]")
+	@Property(label = "Expected Sync Once Time", longValue = DEFAULT_EXPECTED_SYNC_ONCE_TIME, description = "How many milliseconds"
+			+ " a sync-once operation would take?[Optional] [Default: " + DEFAULT_EXPECTED_SYNC_ONCE_TIME + "]")
 	protected static final String PROP_EXPECTED_SYNC_ONCE_TIME = "expected.sync.once.time";
 
 	@Property(value = "Local path: {" + PROP_LOCAL_PATH + "}")
@@ -83,7 +83,7 @@ public class InitialRegistrationImpl {
 			throw new ServiceException(PROP_FILTER_ROOTS + " is mandatory!");
 		}
 
-		final String localDirValue = PropertiesUtil.toString(props.get(PROP_LOCAL_PATH), null);
+		final String localDirValue = StringUtils.trim(PropertiesUtil.toString(props.get(PROP_LOCAL_PATH), null));
 		if (localDirValue == null) {
 			throw new ServiceException(PROP_LOCAL_PATH + " is mandatory!");
 		}

@@ -47,6 +47,9 @@ public class InitialRegistrationImplTest {
 	@Before
 	public void setUp() throws NoSuchFieldException, IOException {
 		this.initialRegistration = new InitialRegistrationImpl();
+		this.serviceSettings = mock(ServiceSettingsImpl.class);
+		
+		PrivateAccessor.setField(this.initialRegistration, "serviceSettings", this.serviceSettings);
 		
 		this.baseDir = File.createTempFile(getClass().getName(), "_tmp");
 		this.baseDir.delete();
@@ -55,16 +58,12 @@ public class InitialRegistrationImplTest {
 		new File(this.baseDir, DEFAULT_FILTER_FN).delete();
 
 		this.generatedConfigFile = new File(this.baseDir, SYNC_CONFIG_FN);
-		this.generatedFilterFile = new File(this.baseDir, SYNC_FILTER_FN);
-
-		this.serviceSettings = mock(ServiceSettingsImpl.class);
+		this.generatedFilterFile = new File(this.baseDir, SYNC_FILTER_FN);		
 
 		this.props = new LinkedHashMap<String, Object>();
 		this.props.put(InitialRegistrationImpl.PROP_LOCAL_PATH, this.baseDir.getAbsolutePath());
 		this.props.put(InitialRegistrationImpl.PROP_FILTER_ROOTS,
 				new String[] { "/content/my-app", "/etc/designs/my-app" });
-
-		PrivateAccessor.setField(this.initialRegistration, "serviceSettings", this.serviceSettings);
 	}
 
 	@After
@@ -74,7 +73,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivateMissingPropertiesFailure() {
+	public void testActivateMissingProperties() {
 		expectedEx.expect(ServiceException.class);
 		expectedEx.expectMessage(" is mandatory!");
 
@@ -82,7 +81,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivateEmptyDirSuccess() throws URISyntaxException {
+	public void testActivateEmptyDir() throws URISyntaxException {
 		/* Prepare data. */
 		this.baseDir.delete();
 		assertEquals(false, this.baseDir.exists());
@@ -95,9 +94,27 @@ public class InitialRegistrationImplTest {
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
 		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
+	
+	
+	@Test
+	public void testActivateTrimPathProperty() throws URISyntaxException {
+		/* Prepare data. */
+		this.baseDir.delete();
+		assertEquals(false, this.baseDir.exists());
+		this.props.put(InitialRegistrationImpl.PROP_LOCAL_PATH, " " + this.baseDir.getAbsolutePath() + " ");
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
+	}
+	
 
 	@Test
-	public void testActivateDirWithIgnorableContentSuccess() throws URISyntaxException, IOException {
+	public void testActivateDirWithIgnorableContent() throws URISyntaxException, IOException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles(".vlt-sync.log");
@@ -112,7 +129,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivateDirWithIgnorableContentOverwriteSuccess() throws URISyntaxException, IOException {
+	public void testActivateDirWithIgnorableContentOverwrite() throws URISyntaxException, IOException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles(".vlt-sync.log");
@@ -128,7 +145,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivateDirWithContentsSuccess() throws IOException, URISyntaxException {
+	public void testActivateDirWithContents() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles("readme.txt", "LICENSE");
@@ -143,7 +160,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivatePropertyFileExistsSuccess() throws IOException, URISyntaxException {
+	public void testActivatePropertyFileExists() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles(SYNC_CONFIG_FN);
@@ -158,7 +175,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivatePropertyFileExistsNoSyncOnceSuccess() throws IOException, URISyntaxException {
+	public void testActivatePropertyFileExistsNoSyncOnce() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		FileUtils.copyFile(getResource("data3-config.properties"), this.generatedConfigFile);
@@ -173,7 +190,7 @@ public class InitialRegistrationImplTest {
 	}
 	
 	@Test
-	public void testActivatePropertyFileExistsOverwriteSuccess() throws IOException, URISyntaxException {
+	public void testActivatePropertyFileExistsOverwrite() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles(SYNC_CONFIG_FN);
@@ -189,7 +206,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivatePropertyFileExistsDirWithContentsOverwriteSuccess() throws IOException, URISyntaxException {
+	public void testActivatePropertyFileExistsDirWithContentsOverwrite() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles("README.md", SYNC_CONFIG_FN);
@@ -206,7 +223,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivateFilterFileExistsSuccess() throws IOException, URISyntaxException {
+	public void testActivateFilterFileExists() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles(SYNC_FILTER_FN);
@@ -221,7 +238,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivateFilterFileExistsOverwriteSuccess() throws IOException, URISyntaxException {
+	public void testActivateFilterFileExistsOverwrite() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles(SYNC_FILTER_FN);
@@ -237,7 +254,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivateDefaultFilterFileExistsSuccess() throws IOException, URISyntaxException {
+	public void testActivateDefaultFilterFileExists() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles(DEFAULT_FILTER_FN);
@@ -252,7 +269,7 @@ public class InitialRegistrationImplTest {
 	}
 
 	@Test
-	public void testActivateDefaultFilterFileExistsOverwriteSuccess() throws IOException, URISyntaxException {
+	public void testActivateDefaultFilterFileExistsOverwrite() throws IOException, URISyntaxException {
 		/* Prepare data. */
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles(DEFAULT_FILTER_FN);
