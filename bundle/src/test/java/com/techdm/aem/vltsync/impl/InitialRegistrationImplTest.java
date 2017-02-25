@@ -93,8 +93,7 @@ public class InitialRegistrationImplTest {
 		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
 		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
-	}
-	
+	}	
 	
 	@Test
 	public void testActivateTrimPathProperty() throws URISyntaxException {
@@ -158,6 +157,24 @@ public class InitialRegistrationImplTest {
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
 		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
+	
+	
+	@Test
+	public void testActivateDirWithContentsJcr2Fs() throws IOException, URISyntaxException {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+		createTempFiles("readme.txt", "LICENSE");
+		this.props.put(InitialRegistrationImpl.PROP_SYNC_ONCE_TYPE, InitialRegistrationImpl.SYNC_ONCE_JCR2FS);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data1-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
+	}
+	
 
 	@Test
 	public void testActivatePropertyFileExists() throws IOException, URISyntaxException {
@@ -211,7 +228,7 @@ public class InitialRegistrationImplTest {
 		assertEquals(0, this.baseDir.list().length);
 		createTempFiles("README.md", SYNC_CONFIG_FN);
 		this.props.put(InitialRegistrationImpl.PROP_OVERWRITE_CONFIG_FILES, true);
-		this.props.put(InitialRegistrationImpl.PROP_EXPECTED_SYNC_ONCE_TIME, 3001l);
+		this.props.put(InitialRegistrationImpl.PROP_SYNC_ONCE_EXPECTED_TIME, 3001l);
 
 		/* Invoke method. */
 		this.initialRegistration.activate(this.props);

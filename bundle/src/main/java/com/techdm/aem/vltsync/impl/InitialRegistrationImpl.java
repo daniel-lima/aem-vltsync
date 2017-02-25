@@ -19,6 +19,7 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ConfigurationPolicy;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.PropertyOption;
 import org.apache.felix.scr.annotations.PropertyUnbounded;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.sling.commons.osgi.PropertiesUtil;
@@ -39,9 +40,30 @@ import aQute.bnd.annotation.component.Deactivate;
 		+ "VLT Sync Initial Registration", description = "Component for initial registration of sync folders")
 public class InitialRegistrationImpl {
 
+	/* Default value for overwrite.config.files property. */
 	private static final boolean DEFAULT_OVERWRITE_CONFIG_FILES = false;
 
-	private static final long DEFAULT_EXPECTED_SYNC_ONCE_TIME = 3000;
+	/* Default value for sync.once.expected.time property. */
+	private static final long DEFAULT_SYNC_ONCE_EXPECTED_TIME = 3000;
+
+	/**
+	 * Value for the "auto detecting" type. If the filesystem local path is
+	 * empty or contains only control files, it will automatically select
+	 * JCR2FS. Otherwise, it will automatically select FS2JCR.
+	 */
+	protected static final String SYNC_ONCE_AUTO = "AUTO";
+
+	/**
+	 * Value for JCR2FS sync-once. @see <a href=
+	 * "http://jackrabbit.apache.org/filevault/usage.html#a.vlt-sync-config.properties">.vlt-sync-config.properties(JCR2FS)</a>.
+	 */
+	protected static final String SYNC_ONCE_JCR2FS = "JCR2FS";
+
+	/**
+	 * Value for FS2JCR sync-once. @see <a href=
+	 * "http://jackrabbit.apache.org/filevault/usage.html#a.vlt-sync-config.properties">.vlt-sync-config.properties(FS2JCR)</a>.
+	 */
+	protected static final String SYNC_ONCE_FS2JCR = "FS2JCR";
 
 	@Property(label = "Filter Roots", description = "JCR paths to be added as roots in the filter file.[Required]", unbounded = PropertyUnbounded.ARRAY)
 	protected static final String PROP_FILTER_ROOTS = "filter.roots";
@@ -49,14 +71,21 @@ public class InitialRegistrationImpl {
 	@Property(label = "Local Path", description = "Filesystem local path to be added as sync root.[Required]")
 	protected static final String PROP_LOCAL_PATH = "local.path";
 
+	@Property(label = "Sync Once Type", value = SYNC_ONCE_AUTO, description = "Type of sync-once"
+			+ " to perform.[Optional] [Default: " + SYNC_ONCE_AUTO + "]", options = {
+					@PropertyOption(name = SYNC_ONCE_AUTO, value = "Auto detect"),
+					@PropertyOption(name = SYNC_ONCE_FS2JCR, value = "Filesystem to JCR"),
+					@PropertyOption(name = SYNC_ONCE_JCR2FS, value = "JCR to Filesystem") })
+	protected static final String PROP_SYNC_ONCE_TYPE = "sync.once.type";
+
+	@Property(label = "Sync Once Expected Time", longValue = DEFAULT_SYNC_ONCE_EXPECTED_TIME, description = "How many milliseconds"
+			+ " a sync-once operation would take?[Optional] [Default: Auto detect]")
+	protected static final String PROP_SYNC_ONCE_EXPECTED_TIME = "sync.once.expected.time";
+
 	@Property(label = "Overwrite Config Files", boolValue = DEFAULT_OVERWRITE_CONFIG_FILES, description = "Overwrite the vlt sync config files"
 			+ " if they already exist?[Optional] [Default: " + DEFAULT_OVERWRITE_CONFIG_FILES + "]")
 	protected static final String PROP_OVERWRITE_CONFIG_FILES = "overwrite.config.files";
-
-	@Property(label = "Expected Sync Once Time", longValue = DEFAULT_EXPECTED_SYNC_ONCE_TIME, description = "How many milliseconds"
-			+ " a sync-once operation would take?[Optional] [Default: " + DEFAULT_EXPECTED_SYNC_ONCE_TIME + "]")
-	protected static final String PROP_EXPECTED_SYNC_ONCE_TIME = "expected.sync.once.time";
-
+	
 	@Property(value = "Local path: {" + PROP_LOCAL_PATH + "}")
 	private static final String PROP_WEBCONSOLE_NAME_HINT = "webconsole.configurationFactory.nameHint";
 
@@ -71,6 +100,8 @@ public class InitialRegistrationImpl {
 	private File localDir = null;
 
 	private Boolean overwriteConfigFiles = null;
+
+	private String syncOnceType = null;
 
 	private Boolean willSyncOnce = null;
 
@@ -92,12 +123,14 @@ public class InitialRegistrationImpl {
 		this.overwriteConfigFiles = PropertiesUtil.toBoolean(props.get(PROP_OVERWRITE_CONFIG_FILES),
 				DEFAULT_OVERWRITE_CONFIG_FILES);
 
+		this.syncOnceType = PropertiesUtil.toString(props.get(PROP_SYNC_ONCE_TYPE), SYNC_ONCE_AUTO);
+		
 		generateFiles();
 
 		Long expectedSyncOnceTime = null;
 		if (this.willSyncOnce) {
-			expectedSyncOnceTime = PropertiesUtil.toLong(props.get(PROP_EXPECTED_SYNC_ONCE_TIME),
-					DEFAULT_EXPECTED_SYNC_ONCE_TIME);
+			expectedSyncOnceTime = PropertiesUtil.toLong(props.get(PROP_SYNC_ONCE_EXPECTED_TIME),
+					DEFAULT_SYNC_ONCE_EXPECTED_TIME);
 		}
 
 		this.serviceSettings.addSyncRoot(this.localDir, expectedSyncOnceTime);
@@ -113,6 +146,7 @@ public class InitialRegistrationImpl {
 		this.filterRoots = null;
 		this.localDir = null;
 		this.overwriteConfigFiles = null;
+		this.syncOnceType = null;
 		this.willSyncOnce = null;
 	}
 
@@ -150,7 +184,14 @@ public class InitialRegistrationImpl {
 
 			this.willSyncOnce = Boolean.TRUE;
 			final File[] localDirContents = getLocalDirContents();
-			final String syncOnce = (localDirContents == null || localDirContents.length == 0) ? "JCR2FS" : "FS2JCR";
+			final String syncOnce;
+
+			if (SYNC_ONCE_AUTO.equals(this.syncOnceType)) {
+				syncOnce = (localDirContents == null || localDirContents.length == 0) ? SYNC_ONCE_JCR2FS
+						: SYNC_ONCE_FS2JCR;
+			} else {
+				syncOnce = this.syncOnceType;
+			}
 
 			PrintWriter writer = null;
 			try {
