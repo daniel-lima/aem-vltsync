@@ -42,13 +42,12 @@ Because AEM VLT Sync is an installation and configuration wrapper for the [Vault
 
 Besides that, it
 
-* doesn't require other "alien" 3rd party tool
+* doesn't require neither the installation or the configuration of 3rd party tools
 * is capable of using preexistent .vlt-sync-config.properties and .vlt-sync-filter.xml, which gives you a finer control of whole process   
  
  
 ## Known limitations
 
-The current version of Vault Sync Service doesn't operate over special vault serialized files that represent nodes and their properties in the JCR: .content.xml, dialog.xml, ...
-You'll continue to use VLT and Maven commands to update these kind of data.
+The current version of Vault Sync Service doesn't operate over special vault serialized files that represent nodes and their properties in the JCR (.content.xml, dialog.xml, ...), so you'll continue to use VLT and Maven commands to update these kind of data.
    
-*Overwrite Config Files*=true should be used carefully in conjunction with *Sync Once Type*=*Auto detect* because they may cause the loss of data in the *Filter Roots*. 
+*Overwrite Config Files*=true should be used carefully in conjunction with *Sync Once Type*=*Auto detect* because they may cause the loss of data stored in *Filter Roots*. 
