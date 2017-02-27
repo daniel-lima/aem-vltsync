@@ -12,10 +12,10 @@ Allowing you, as an AEM developer:
 
 1. Download the appropriated package
 
-   For AEM 6.0 use
-   For AEM 6.1 and 6.2 use
+   * for AEM 6.0 use
+   * for AEM 6.1 and 6.2 use
 
-2. Upload and install it through [CRX Package Manager](http://localhost:4502/crx/packmgr/index.jsp)
+2. Upload and install it through the [CRX Package Manager](http://localhost:4502/crx/packmgr/index.jsp)
 
 3. Configure one or more instances of the registration component
 
@@ -27,7 +27,7 @@ Allowing you, as an AEM developer:
 
 4. Done!
 
-The sync status can be found at .vlt-sync.log, under the *Local path*.
+The sync status can be found at .vlt-sync.log, under the *Local Path*.
 
 For further information on installation and configuration, please refer to the Detailed Guide.
 
@@ -48,6 +48,6 @@ Besides that, it
  
 ## Known limitations
 
-The current version of Vault Sync Service doesn't operate over special vault serialized files that represent nodes and their properties in the JCR (.content.xml, dialog.xml, ...), so you'll continue to use VLT and Maven commands to update these kind of data.
+The current version of Vault Sync Service doesn't operate over special vault serialized files (.content.xml, dialog.xml, ...). So, you'll continue to use VLT and Maven commands to update those type of files.
    
 *Overwrite Config Files*=true should be used carefully in conjunction with *Sync Once Type*=*Auto detect* because they may cause the loss of data stored in *Filter Roots*. 
