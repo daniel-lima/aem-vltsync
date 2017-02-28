@@ -18,6 +18,7 @@
 	<artifactId>vltsync-sample-content</artifactId>
 	<packaging>content-package</packaging>
 	<name>[AEM] VLT Sync Sample Package</name>
+	<description>[AEM] Sample of VLT Sync usage</description>
 
 	<dependencies>
 		<dependency>
