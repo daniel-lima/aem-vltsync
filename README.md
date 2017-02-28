@@ -3,7 +3,7 @@
 
 Content package of the VLT Sync project. Generated using the multimodule-content-package-archetype.
 
-Detailed documentation on the project: [http://daniel-lima.github.io/aem-vltsync](http://daniel-lima.github.io/aem-vltsync).
+Detailed project documentation: [http://daniel-lima.github.io/aem-vltsync](http://daniel-lima.github.io/aem-vltsync).
 
 Building
 --------
