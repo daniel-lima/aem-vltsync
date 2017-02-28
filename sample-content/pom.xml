@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.techdm.aem.vltsync</groupId>
 		<artifactId>vltsync</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<!-- ====================================================================== -->
@@ -18,6 +18,7 @@
 	<artifactId>vltsync-sample-content</artifactId>
 	<packaging>content-package</packaging>
 	<name>[AEM] VLT Sync Sample Package</name>
+	<description>[AEM] Sample of VLT Sync usage</description>
 
 	<dependencies>
 		<dependency>
