@@ -8,11 +8,11 @@
 
 	<groupId>com.techdm.aem.vltsync</groupId>
 	<artifactId>vltsync</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>[AEM] VLT Sync - Reactor Project</name>
-	<description>[AEM] VLT Sync installation and support</description>
+	<description>[AEM] Vault Sync installation and support</description>
 	<url>http://daniel-lima.github.io/aem-vltsync</url>
 
 	<prerequisites>

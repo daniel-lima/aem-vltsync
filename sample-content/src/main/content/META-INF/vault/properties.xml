@@ -9,5 +9,5 @@
 <entry key="description">[AEM] VLT Sync Sample Package</entry>
 <entry key="group">com.techdm.aem</entry>
 <entry key="name">vltsync-sample-content</entry>
-<entry key="path">/etc/packages/com.techdm.aem/vltsync-sample-content-1.0-SNAPSHOT.zip</entry>
+<entry key="path">/etc/packages/com.techdm.aem/vltsync-sample-content-1.0.0-SNAPSHOT.zip</entry>
 </properties>
