@@ -13,10 +13,35 @@
 
 	<name>[AEM] VLT Sync - Reactor Project</name>
 	<description>[AEM] VLT Sync installation and support</description>
+	<url>http://daniel-lima.github.io/aem-vltsync</url>
 
 	<prerequisites>
 		<maven>3.0.2</maven>
 	</prerequisites>
+
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Daniel Henrique Alves Lima</name>
+			<email>daniel@danielhalima.com</email>
+			<organization>TechDM</organization>
+			<organizationUrl>http://techdm.com/aem</organizationUrl>
+		</developer>
+	</developers>
+
+
+	<scm>
+		<connection>scm:git:git://github.com/daniel-lima/aem-vltsync.git</connection>
+		<developerConnection>scm:git:ssh://github.com:daniel-lima/aem-vltsync.git</developerConnection>
+		<url>http://github.com/daniel-lima/aem-vltsync/tree/master</url>
+	</scm>
+  
 
 	<!-- ====================================================================== -->
 	<!-- P R O P E R T I E S -->
@@ -153,10 +178,11 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<!-- https://maven.apache.org/guides/mini/guide-central-repository-upload.html#FAQ_and_common_mistakes -->
 	<!-- Inclusion of repositories in POMs is controversial, to say the least. 
 		It would be best if you proxied the Adobe repository using a Maven Repository 
 		Manager. Once you do that, remove these sections. -->
-	<repositories>
+	<!-- repositories>
 		<repository>
 			<id>adobe</id>
 			<name>Adobe Public Repository</name>
@@ -171,7 +197,7 @@
 			<url>http://repo.adobe.com/nexus/content/groups/public/</url>
 			<layout>default</layout>
 		</pluginRepository>
-	</pluginRepositories>
+	</pluginRepositories -->
 
 	<build>
 		<pluginManagement>
