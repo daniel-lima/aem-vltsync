@@ -1,7 +1,9 @@
 [AEM] VLT Sync
 ========
 
-This a content package project generated using the multimodule-content-package-archetype.
+Content package of the VLT Sync project. Generated using the multimodule-content-package-archetype.
+
+Detailed documentation on the project: [http://daniel-lima.github.io/aem-vltsync](http://daniel-lima.github.io/aem-vltsync).
 
 Building
 --------
