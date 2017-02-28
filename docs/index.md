@@ -15,9 +15,9 @@ Allowing you, as an AEM developer:
    * for AEM 6.0 use [AEM VLT Sync 1.0.0](https://github.com/daniel-lima/aem-vltsync/releases/download/aem-vltsync-1.0.0/vltsync-content-1.0.0.zip)
    * for AEM 6.1 use [AEM VLT Sync 2.0.0](https://github.com/daniel-lima/aem-vltsync/releases/download/aem-vltsync-2.0.0/vltsync-content-2.0.0.zip)
    * for AEM 6.2 use [AEM VLT Sync 3.0.0](https://github.com/daniel-lima/aem-vltsync/releases/download/aem-vltsync-3.0.0/vltsync-content-3.0.0.zip)
-
+   
 2. Upload and install it through the [CRX Package Manager](http://localhost:4502/crx/packmgr/index.jsp)
-
+   
 3. Configure one or more instances of the registration component
 
    * access [OSGi -> Configuration in the AEM Web Console](http://localhost:4502/system/console/configMgr)
@@ -25,9 +25,9 @@ Allowing you, as an AEM developer:
    * fill in *Filter Roots* with an existent JCR path, like /apps/{your-project}
    * fill in *Local Path* with a path at your local file system, like /projects/{your-project}/content/src/main/jcr_root 
    * click on *Save*
-
+   
 4. Done!
-
+   
 The sync status can be found at .vlt-sync.log, under the *Local Path*.
 
 For further information on installation and configuration, please refer to the Detailed Guide.
