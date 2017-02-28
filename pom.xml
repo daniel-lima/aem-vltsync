@@ -8,7 +8,7 @@
 
 	<groupId>com.techdm.aem.vltsync</groupId>
 	<artifactId>vltsync</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
 	<name>[AEM] VLT Sync - Reactor Project</name>
@@ -126,7 +126,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.3.2</version>
+				<version>3.0.1</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -139,7 +139,7 @@
 			<dependency>
 	<groupId>org.apache.sling</groupId>
 	<artifactId>org.apache.sling.event</artifactId>
-	<version>3.5.4</version>
+	<version>3.3.10</version>
 	<scope>provided</scope>
 </dependency>
 
