@@ -64,13 +64,14 @@ public class ServiceSettingsImplTest {
 		/* Check its results. */
 		verify(this.jobManager, times(1)).addJob(TOPIC_NAME, this.props);
 	}
-
+	
+	
 	@Test
 	public void testAddSyncRootNoSyncOnce() {
 		/* Prepare data. */
 		this.props.put(KEY_ACTION, ACTION_ADD);
 		this.props.put(KEY_SYNC_ROOT, new File("/virtual/root"));
-		this.props.put(KEY_EXPECTED_SYNC_TIME, null);
+		this.props.remove(KEY_EXPECTED_SYNC_TIME);
 
 		/* Invoke method. */
 		this.serviceSettings.addSyncRoot(new File("/virtual/root"), null);

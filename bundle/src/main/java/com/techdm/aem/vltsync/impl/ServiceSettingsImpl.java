@@ -16,7 +16,7 @@
 package com.techdm.aem.vltsync.impl;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.felix.scr.annotations.Component;
@@ -50,15 +50,22 @@ public class ServiceSettingsImpl {
 	 * @param syncRoot
 	 *            directory to add
 	 * @param expectedSyncTime
-	 *            the expected sync time as result of adding this directory
+	 *            the expected sync time as result of adding this directory or
+	 *            null if sync once won't occur.
 	 */
 	public void addSyncRoot(final File syncRoot, Long expectedSyncTime) throws IllegalStateException {
 		logger.debug("addSyncRoot(): syncRoot = {}", syncRoot);
 
-		final Map<String, Object> props = new LinkedHashMap<String, Object>();
+		/*
+		 * Job manager doesn't like properties with null value, so we use
+		 * Hashtable here to assure that only non-null values will pass along.
+		 */
+		final Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(ServiceSettingsConsumerImpl.KEY_ACTION, ServiceSettingsConsumerImpl.ACTION_ADD);
 		props.put(ServiceSettingsConsumerImpl.KEY_SYNC_ROOT, syncRoot);
-		props.put(ServiceSettingsConsumerImpl.KEY_EXPECTED_SYNC_TIME, expectedSyncTime);
+		if (expectedSyncTime != null) {
+			props.put(ServiceSettingsConsumerImpl.KEY_EXPECTED_SYNC_TIME, expectedSyncTime);
+		}
 
 		jobManager.addJob(ServiceSettingsConsumerImpl.TOPIC_NAME, props);
 	}
@@ -73,7 +80,11 @@ public class ServiceSettingsImpl {
 	public void removeSyncRoot(final File syncRoot) throws IllegalStateException {
 		logger.debug("removeSyncRoot(): syncRoot = {}", syncRoot);
 
-		final Map<String, Object> props = new LinkedHashMap<String, Object>();
+		/*
+		 * Job manager doesn't like properties with null value, so we use
+		 * Hashtable here to assure that only non-null values will pass along.
+		 */
+		final Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(ServiceSettingsConsumerImpl.KEY_ACTION, ServiceSettingsConsumerImpl.ACTION_REMOVE);
 		props.put(ServiceSettingsConsumerImpl.KEY_SYNC_ROOT, syncRoot);
 
