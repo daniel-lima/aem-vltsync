@@ -8,7 +8,7 @@
 
 	<groupId>com.techdm.aem.vltsync</groupId>
 	<artifactId>vltsync</artifactId>
-	<version>3.0.1</version>
+	<version>3.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>[AEM] VLT Sync - Reactor Project</name>
@@ -126,7 +126,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.0.1</version>
+				<version>3.0.1-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
