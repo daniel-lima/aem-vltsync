@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.techdm.aem.vltsync</groupId>
 		<artifactId>vltsync</artifactId>
-		<version>3.0.1-SNAPSHOT</version>
+		<version>1.0.1</version>
 	</parent>
 
 	<!-- ====================================================================== -->
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.apache.jackrabbit.vault</groupId>
 			<artifactId>vault-sync</artifactId>
-			<version>3.1.16</version>
+			<version>3.1.6</version>
 		</dependency>
 	</dependencies>
 	<build>
