@@ -60,6 +60,12 @@ public class InitialRegistrationImpl {
 
 	/* Default value for sync.once.expected.time property. */
 	private static final long DEFAULT_SYNC_ONCE_EXPECTED_TIME = 3000;
+		
+	/**
+	 * Value for empty sync-once. @see <a href=
+	 * "http://jackrabbit.apache.org/filevault/usage.html#a.vlt-sync-config.properties">.vlt-sync-config.properties()</a>.
+	 */
+	protected static final String SYNC_ONCE_DISABLED = "";
 
 	/**
 	 * Value for the "auto detecting" type. If the filesystem local path is
@@ -86,8 +92,9 @@ public class InitialRegistrationImpl {
 	@Property(label = "Local Path", description = "Filesystem local path to be added as sync root.[Required]")
 	protected static final String PROP_LOCAL_PATH = "local.path";
 
-	@Property(label = "Sync Once Type", value = SYNC_ONCE_AUTO, description = "Type of sync-once"
-			+ " to perform.[Optional] [Default: Auto detect]", options = {
+	@Property(label = "Sync Once Type", value = SYNC_ONCE_DISABLED, description = "Type of sync-once"
+			+ " to perform.[Optional] [Default: ]", options = {
+					@PropertyOption(name = SYNC_ONCE_DISABLED, value = ""),
 					@PropertyOption(name = SYNC_ONCE_AUTO, value = "Auto detect"),
 					@PropertyOption(name = SYNC_ONCE_FS2JCR, value = "Filesystem to JCR"),
 					@PropertyOption(name = SYNC_ONCE_JCR2FS, value = "JCR to Filesystem") })
@@ -138,7 +145,7 @@ public class InitialRegistrationImpl {
 		this.overwriteConfigFiles = PropertiesUtil.toBoolean(props.get(PROP_OVERWRITE_CONFIG_FILES),
 				DEFAULT_OVERWRITE_CONFIG_FILES);
 
-		this.syncOnceType = PropertiesUtil.toString(props.get(PROP_SYNC_ONCE_TYPE), SYNC_ONCE_AUTO);
+		this.syncOnceType = PropertiesUtil.toString(props.get(PROP_SYNC_ONCE_TYPE), SYNC_ONCE_DISABLED);
 
 		generateFiles();
 

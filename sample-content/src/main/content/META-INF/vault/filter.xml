@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
   <filter root="/apps/techdm-vltsync-sample"/>
-  <filter root="/content/techdm-vltsync-sample"/>  
+  <filter root="/content/techdm-vltsync-sample"/>
+  <filter root="/etc/clientlibs/techdm-vltsync-sample"/>  
 </workspaceFilter>

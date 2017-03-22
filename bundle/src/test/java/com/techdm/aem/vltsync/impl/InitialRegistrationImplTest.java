@@ -63,9 +63,9 @@ public class InitialRegistrationImplTest {
 	public void setUp() throws NoSuchFieldException, IOException {
 		this.initialRegistration = new InitialRegistrationImpl();
 		this.serviceSettings = mock(ServiceSettingsImpl.class);
-		
+
 		PrivateAccessor.setField(this.initialRegistration, "serviceSettings", this.serviceSettings);
-		
+
 		this.baseDir = File.createTempFile(getClass().getName(), "_tmp");
 		this.baseDir.delete();
 		this.baseDir.mkdir();
@@ -73,9 +73,10 @@ public class InitialRegistrationImplTest {
 		new File(this.baseDir, DEFAULT_FILTER_FN).delete();
 
 		this.generatedConfigFile = new File(this.baseDir, SYNC_CONFIG_FN);
-		this.generatedFilterFile = new File(this.baseDir, SYNC_FILTER_FN);		
+		this.generatedFilterFile = new File(this.baseDir, SYNC_FILTER_FN);
 
 		this.props = new LinkedHashMap<String, Object>();
+		this.props.put(InitialRegistrationImpl.PROP_SYNC_ONCE_TYPE, InitialRegistrationImpl.SYNC_ONCE_AUTO);
 		this.props.put(InitialRegistrationImpl.PROP_LOCAL_PATH, this.baseDir.getAbsolutePath());
 		this.props.put(InitialRegistrationImpl.PROP_FILTER_ROOTS,
 				new String[] { "/content/my-app", "/etc/designs/my-app" });
@@ -109,6 +110,41 @@ public class InitialRegistrationImplTest {
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
 		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}	
+
+	
+	@Test
+	public void testActivateEmptyDirDisabled1() throws URISyntaxException {
+		/* Prepare data. */
+		this.baseDir.delete();
+		assertEquals(false, this.baseDir.exists());
+		this.props.remove(InitialRegistrationImpl.PROP_SYNC_ONCE_TYPE);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data3-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
+	}	
+	
+	
+	@Test
+	public void testActivateEmptyDirDisabled2() throws URISyntaxException {
+		/* Prepare data. */
+		this.baseDir.delete();
+		assertEquals(false, this.baseDir.exists());
+		this.props.put(InitialRegistrationImpl.PROP_SYNC_ONCE_TYPE, InitialRegistrationImpl.SYNC_ONCE_DISABLED);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data3-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
+	}	
+	
 	
 	@Test
 	public void testActivateTrimPathProperty() throws URISyntaxException {
@@ -141,6 +177,23 @@ public class InitialRegistrationImplTest {
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
 		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
+	
+	
+	@Test
+	public void testActivateDirWithIgnorableContentDisabled() throws URISyntaxException, IOException {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+		createTempFiles(".vlt-sync.log");
+		this.props.remove(InitialRegistrationImpl.PROP_SYNC_ONCE_TYPE);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data3-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
+	}	
 
 	@Test
 	public void testActivateDirWithIgnorableContentOverwrite() throws URISyntaxException, IOException {
@@ -173,6 +226,22 @@ public class InitialRegistrationImplTest {
 		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
 	
+
+	@Test
+	public void testActivateDirWithContentsDisabled() throws IOException, URISyntaxException {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+		createTempFiles("readme.txt", "LICENSE");
+		this.props.remove(InitialRegistrationImpl.PROP_SYNC_ONCE_TYPE);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data3-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
+	}
 	
 	@Test
 	public void testActivateDirWithContentsJcr2Fs() throws IOException, URISyntaxException {
@@ -236,6 +305,24 @@ public class InitialRegistrationImplTest {
 		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
 		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
 	}
+	
+	
+	@Test
+	public void testActivatePropertyFileExistsOverwriteDisabled() throws IOException, URISyntaxException {
+		/* Prepare data. */
+		assertEquals(0, this.baseDir.list().length);
+		createTempFiles(SYNC_CONFIG_FN);
+		this.props.remove(InitialRegistrationImpl.PROP_SYNC_ONCE_TYPE);
+		this.props.put(InitialRegistrationImpl.PROP_OVERWRITE_CONFIG_FILES, true);
+
+		/* Invoke method. */
+		this.initialRegistration.activate(this.props);
+
+		/* Check its results. */
+		FileAssert.assertEquals(getResource("data3-config.properties"), this.generatedConfigFile);
+		FileAssert.assertEquals(getResource("data1-filter.xml"), this.generatedFilterFile);
+		verify(this.serviceSettings, times(1)).addSyncRoot(this.baseDir, 3000l);
+	}	
 
 	@Test
 	public void testActivatePropertyFileExistsDirWithContentsOverwrite() throws IOException, URISyntaxException {
