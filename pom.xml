@@ -8,7 +8,7 @@
 
 	<groupId>com.techdm.aem.vltsync</groupId>
 	<artifactId>vltsync</artifactId>
-	<version>3.0.2</version>
+	<version>3.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>[AEM] VLT Sync - Reactor Project</name>
