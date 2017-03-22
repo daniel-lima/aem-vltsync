@@ -13,7 +13,7 @@ Allowing you, as an AEM developer:
 1. Download the appropriate content package
    * for AEM 6.0 use [AEM VLT Sync 1.0.2](https://github.com/daniel-lima/aem-vltsync/releases/download/aem-vltsync-1.0.2/vltsync-content-1.0.2.zip)
    * for AEM 6.1 use [AEM VLT Sync 2.0.2](https://github.com/daniel-lima/aem-vltsync/releases/download/aem-vltsync-2.0.2/vltsync-content-2.0.2.zip)
-   * for AEM 6.2 use [AEM VLT Sync 3.0.1](https://github.com/daniel-lima/aem-vltsync/releases/download/aem-vltsync-3.0.1/vltsync-content-3.0.1.zip)
+   * for AEM 6.2 use [AEM VLT Sync 3.0.2](https://github.com/daniel-lima/aem-vltsync/releases/download/aem-vltsync-3.0.2/vltsync-content-3.0.2.zip)
 2. Upload and install it through the [CRX Package Manager](http://localhost:4502/crx/packmgr/index.jsp)
 3. Configure one or more instances of the registration component
    * access [OSGi -> Configuration in the AEM Web Console](http://localhost:4502/system/console/configMgr)
