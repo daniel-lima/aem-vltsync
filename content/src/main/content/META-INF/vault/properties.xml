@@ -3,11 +3,11 @@
 <properties>
 <comment>FileVault Package Properties</comment>
 <entry key="buildCount">1</entry>
-<entry key="version">3.0.2-SNAPSHOT</entry>
+<entry key="version">1.0.2</entry>
 <entry key="dependencies" />
 <entry key="packageFormatVersion">2</entry>
 <entry key="description">[AEM] VLT Sync Package</entry>
 <entry key="group">com.techdm.aem</entry>
 <entry key="name">vltsync-content</entry>
-<entry key="path">/etc/packages/com.techdm.aem/vltsync-content-3.0.2-SNAPSHOT.zip</entry>
+<entry key="path">/etc/packages/com.techdm.aem/vltsync-content-1.0.2.zip</entry>
 </properties>
