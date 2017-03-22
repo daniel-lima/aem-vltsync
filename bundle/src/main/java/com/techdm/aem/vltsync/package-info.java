@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-@Version("2.0.2")
+@Version("3.0.2")
 package com.techdm.aem.vltsync;
 
 import aQute.bnd.annotation.Version;
