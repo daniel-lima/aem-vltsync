@@ -19,7 +19,7 @@ Allowing you, as an AEM developer:
    * access [OSGi -> Configuration in the AEM Web Console](http://localhost:4502/system/console/configMgr)
    * locate *VLT Sync Initial Registration* and click on *+*
    * fill in *Filter Roots* with an existent JCR path, like /apps/{your-project}
-   * fill in *Local Path* with a path at your local file system, like /projects/{your-project}/content/src/main/jcr_root 
+   * fill in *Local Path* with a path at your local file system, like /projects/{your-project}/content/src/main/jcr_root
    * click on *Save*
 4. Done!
    
