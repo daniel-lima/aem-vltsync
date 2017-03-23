@@ -7,8 +7,8 @@
     cqVersion="5.6.1"
     group="com.techdm.aem"
     name="vltsync-content"
-    path="/etc/packages/com.techdm.aem/vltsync-content-1.1.0"
-    version="1.1.0">
+    path="/etc/packages/com.techdm.aem/vltsync-content-2.1.0"
+    version="2.1.0">
     <filter jcr:primaryType="nt:unstructured">
         <f0
             jcr:primaryType="nt:unstructured"
